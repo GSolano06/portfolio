@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Two-bit multiplier demo</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;padding:8px;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;color:#16202A;background:#F1F4F0}
+  .board{background:#123D31;color:#E6F0EA;border-radius:4px;padding:22px;display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:flex-end}
+  .dip{display:inline-flex;align-items:flex-end;gap:6px;background:#2D5AA6;padding:12px 14px 8px;border-radius:3px}
+  .gap{width:16px}
+  .cell,.led-cell{display:flex;flex-direction:column;align-items:center;gap:7px}
+  .sig{font:12px/1 Consolas,Menlo,monospace}
+  .sw{position:relative;width:28px;height:56px;padding:0;border:0;border-radius:3px;background:#0E2B57;cursor:pointer}
+  .knob{position:absolute;left:3px;right:3px;top:3px;height:22px;background:#F4F6F3;border-radius:2px;transform:translateY(28px);transition:transform .12s}
+  .sw[aria-checked="true"] .knob{transform:translateY(0)}
+  .outs{display:flex;gap:16px}
+  .led{width:22px;height:22px;border-radius:50%;background:#4A1B19;border:1px solid rgba(0,0,0,.45)}
+  .led.on{background:#FF4338;box-shadow:0 0 6px 2px rgba(255,67,56,.85),0 0 22px 7px rgba(255,67,56,.4)}
+  .readout{margin:16px 0 0;font-size:20px;font-weight:700;min-height:1.4em;white-space:pre}
+  pre{margin:16px 0 0;padding-left:12px;border-left:3px solid #123D31;font:13.5px/1.7 Consolas,Menlo,monospace}
+  p.note{margin:10px 0 0;font-size:13px;color:#4F5D67}
+  @media (prefers-reduced-motion:reduce){.knob{transition:none}}
+  button:focus-visible{outline:3px solid #FFD95A;outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="board">
+  <div>
+    <div class="dip" role="group" aria-label="Input switches" id="dip"></div>
+    <p class="readout" id="readout" aria-live="polite"></p>
+  </div>
+  <div class="outs" role="group" aria-label="Product LEDs" id="outs"></div>
+</div>
+<pre>P0 = A0·B0
+P1 = A1·B0 ⊕ A0·B1
+P2 = A1·B1·(A0·B0)'
+P3 = A1·A0·B1·B0</pre>
+<script>
+const names=["A1","A0","B1","B0"], st=[1,1,1,1];
+function logic(a1,a0,b1,b0){const p0=a0&b0,a=a1&b1;return{p0,p1:(a1&b0)^(a0&b1),p2:a&(p0^1),p3:a&p0}}
+const dip=document.getElementById("dip"), outs=document.getElementById("outs"), ro=document.getElementById("readout");
+const btns=names.map((n,i)=>{
+  if(i===2){const g=document.createElement("span");g.className="gap";dip.appendChild(g)}
+  const c=document.createElement("div");c.className="cell";
+  const b=document.createElement("button");b.className="sw";b.type="button";b.setAttribute("role","switch");b.setAttribute("aria-label","Switch "+n);
+  b.innerHTML='<span class="knob"></span>';b.onclick=()=>{st[i]^=1;draw()};
+  const s=document.createElement("span");s.className="sig";s.textContent=n;c.append(b,s);dip.appendChild(c);return b});
+const leds=["P3","P2","P1","P0"].map(n=>{
+  const c=document.createElement("div");c.className="led-cell";
+  const l=document.createElement("span");l.className="led";l.setAttribute("role","img");
+  const s=document.createElement("span");s.className="sig";s.textContent=n;c.append(l,s);outs.appendChild(c);return l});
+function draw(){
+  btns.forEach((b,i)=>b.setAttribute("aria-checked",st[i]?"true":"false"));
+  const p=logic(...st),v=[p.p3,p.p2,p.p1,p.p0];
+  v.forEach((x,i)=>{leds[i].classList.toggle("on",!!x);leds[i].setAttribute("aria-label",["P3","P2","P1","P0"][i]+(x?" on":" off"))});
+  const A=st[0]*2+st[1],B=st[2]*2+st[3],P=v[0]*8+v[1]*4+v[2]*2+v[3];
+  ro.textContent=A+" × "+B+" = "+P+"   ("+v.join("")+")";
+}
+for(let n=0;n<16;n++){const a=[(n>>3)&1,(n>>2)&1,(n>>1)&1,n&1],p=logic(...a);
+  console.assert(p.p3*8+p.p2*4+p.p1*2+p.p0===(a[0]*2+a[1])*(a[2]*2+a[3]),"mismatch",a)}
+draw();
+
+(function(){function sz(){parent.postMessage({demoHeight:document.body.offsetHeight},"*")}
+addEventListener("load",sz);addEventListener("resize",sz);if(window.ResizeObserver)new ResizeObserver(sz).observe(document.body)})();
+</script>
+</body>
+</html>
