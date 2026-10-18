@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Two-bit multiplier | Gabriel Solano</title>
 <meta name="description" content="Design, schematic, and testing of a two-bit multiplier built from 74HC logic chips.">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -28,12 +28,12 @@ P2 = A1·B1·(A0·B0)'
 P3 = A1·A0·B1·B0</pre>
 <p>The outputs share terms. A1·B1 feeds both P2 and P3, and P0 is reused as an input to P2 (inverted) and P3. Every gate has two inputs, which matches the fan-in of 7400-series gates, and sharing keeps the whole design to 8 gates.</p>
 <div class="figs">
-<figure><img src="images/3-multiplier-kmap-P1.jpg" alt="Hand-drawn K-map for P1 with four grouped pairs of ones and the simplified result A1B0 XOR A0B1." loading="lazy"><figcaption>K-map for P1. The groupings reduce to an XOR of two product terms.</figcaption></figure>
-<figure><img src="images/2-multiplier-schematic.jpg" alt="Hand-drawn gate schematic of the complete multiplier with outputs P0 through P3." loading="lazy"><figcaption>Schematic of the complete multiplier with shared terms.</figcaption></figure>
+<figure><img src="3-multiplier-kmap-P1.jpg" alt="Hand-drawn K-map for P1 with four grouped pairs of ones and the simplified result A1B0 XOR A0B1." loading="lazy"><figcaption>K-map for P1. The groupings reduce to an XOR of two product terms.</figcaption></figure>
+<figure><img src="2-multiplier-schematic.jpg" alt="Hand-drawn gate schematic of the complete multiplier with outputs P0 through P3." loading="lazy"><figcaption>Schematic of the complete multiplier with shared terms.</figcaption></figure>
 </div>
 <h2>Build and testing</h2>
 <p>I built the circuit in stages and checked each stage against the truth table before adding the next: P0 alone, then P0 and P3, then P0, P2, and P3, then all four outputs. The LED states for the full circuit match the truth table on all 16 input combinations.</p>
-<figure class="narrow"><img src="images/1-multiplier-build.jpg" alt="Completed multiplier on a breadboard with three logic chips, a DIP switch bank at the lower right, and four red LEDs along the left edge." loading="lazy"><figcaption>The completed multiplier. The four LEDs along the left edge show P0 through P3.</figcaption></figure>
+<figure class="narrow"><img src="1-multiplier-build.jpg" alt="Completed multiplier on a breadboard with three logic chips, a DIP switch bank at the lower right, and four red LEDs along the left edge." loading="lazy"><figcaption>The completed multiplier. The four LEDs along the left edge show P0 through P3.</figcaption></figure>
 <ul class="links"><li><a href="index.html">Try the live demo on the home page</a></li><li><a href="rps-judge.html">Next: the rock-paper-scissors judge</a></li></ul>
 </div></main>
 <footer class="site"><div class="wrap">Gabriel Solano, Electrical Engineering, University of Pittsburgh, class of 2029</div></footer>
