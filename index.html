@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gabriel Solano | Electrical engineering portfolio</title>
+<meta name="description" content="Digital logic and embedded hardware projects by Gabriel Solano, electrical engineering student at the University of Pittsburgh.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site"><div class="wrap">
+<a class="brand" href="index.html">Gabriel Solano</a>
+<nav aria-label="Main"><ul><li><a href="index.html" aria-current="page">Home</a></li><li><a href="multiplier.html">Two-bit multiplier</a></li><li><a href="rps-judge.html">Rock-paper-scissors judge</a></li><li><a href="about.html">About</a></li></ul></nav>
+</div></header>
+<main id="main"><div class="wrap">
+<h1>Gabriel Solano</h1>
+<p class="lede">Electrical engineering student at the University of Pittsburgh, class of 2029. I build digital logic and embedded hardware, and I test each design against its specification.</p>
+<div class="demo"><iframe src="embeds/multiplier-demo.html" title="Interactive two-bit multiplier" style="height:330px" scrolling="no" loading="lazy"></iframe></div>
+<p class="demo-note">This is the two-bit multiplier I built in my Digital Circuits and Systems course. Flip the switches and the LEDs update. They are computed from my gate equations, not from a multiply operator.</p>
+<ul class="links">
+<li><a href="multiplier.html">How I designed and tested the multiplier</a></li>
+<li><a href="rps-judge.html">The rock-paper-scissors judge</a></li>
+</ul>
+<h2>More work</h2>
+<ul class="work">
+<li><div class="when">Oct 2026</div><div><h3>FPGA design in VHDL</h3><p>I reimplemented the rock-paper-scissors judge in VHDL and added a 4:1 multiplexer using concurrent signal assignments. Both were programmed onto an Intel MAX 10 FPGA on a DE10-Lite board with Quartus Prime, and simulated in ModelSim with scripted stimulus. The judge was simulated on all 16 input combinations.</p></div></li>
+<li><div class="when">Oct 2024 to May 2025</div><div><h3>Auto-EQ, high school capstone</h3><p>A gain controller that attenuates audio output in proportion to ambient sound level, using an SPI digital potentiometer as a voltage divider with 256 steps. An exponential moving-average filter in embedded C++ smooths the gain changes. I could not integrate a live microphone, so I validated the control logic against simulated sound input.</p></div></li>
+<li><div class="when">Dec 2022 to May 2023</div><div><h3>Concussion Sensing Device</h3><p>A head-impact detector built with teammates in my Career Technical Engineering program, using an Arduino and an accelerometer to show severity on LEDs from g-force thresholds. I tested it with controlled drop heights, and the LED tier matched the expected severity in 90 of 100 trials.</p></div></li>
+</ul>
+</div></main>
+<footer class="site"><div class="wrap">Gabriel Solano, Electrical Engineering, University of Pittsburgh, class of 2029</div></footer>
+<script>
+addEventListener("message",function(e){if(!e.data||typeof e.data.demoHeight!=="number")return;
+document.querySelectorAll(".demo iframe").forEach(function(f){if(f.contentWindow===e.source)f.style.height=(e.data.demoHeight+4)+"px"})});
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rock-paper-scissors judge | Gabriel Solano</title>
+<meta name="description" content="A rock-paper-scissors judge built from 74HC logic chips, with K-maps, schematic, and an interactive demo.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site"><div class="wrap">
+<a class="brand" href="index.html">Gabriel Solano</a>
+<nav aria-label="Main"><ul><li><a href="index.html">Home</a></li><li><a href="multiplier.html">Two-bit multiplier</a></li><li><a href="rps-judge.html" aria-current="page">Rock-paper-scissors judge</a></li><li><a href="about.html">About</a></li></ul></nav>
+</div></header>
+<main id="main"><div class="wrap">
+<h1>Rock-paper-scissors judge</h1>
+<p class="sub">Digital Circuits and Systems, Lab 5, Fall 2026</p>
+<p class="lede">A circuit that judges a round of rock-paper-scissors from two 2-bit choices. It lights the winner's LED, lights both for a tie, and lights an error LED for an invalid input.</p>
+<dl class="facts"><div><dt>Inputs</dt><dd>Four push buttons: A1 A0 and B1 B0</dd></div><div><dt>Outputs</dt><dd>WA and WB (winner LEDs), E (invalid input)</dd></div><div><dt>Chips</dt><dd>4 (7404, 7408, 7432, and 7486)</dd></div><div><dt>Gates</dt><dd>17 (6 NOT, 4 AND, 3 OR, 4 XOR)</dd></div></dl>
+<h2>Design decisions</h2>
+<p>Each player's choice is a 2-bit code: rock is 01, paper is 10, and scissors is 11. That leaves 00 as the invalid selection, so a player who presses nothing is flagged rather than counted as a choice.</p>
+<p>For a tie I light both winner LEDs, since neither player lost and neither won. When either input is invalid, E turns on, and WA and WB are don't-cares. Treating those rows as don't-cares lets the K-map groups grow, which shrinks the logic.</p>
+<div class="demo"><iframe src="embeds/rps-demo.html" title="Interactive rock-paper-scissors judge" style="height:430px" scrolling="no" loading="lazy"></iframe></div>
+<h2>Logic</h2>
+<p>I reduced each output with a K-map.</p>
+<pre class="eq">WA = A1 ⊕ B0 + B0·(A0 ⊕ B1)'
+WB = A0 ⊕ B1 + B1·(A1 ⊕ B0)'
+E  = A1'·A0' + B1'·B0'</pre>
+<figure><img src="images/6-rps-kmaps.jpg" alt="Three hand-drawn K-maps for WA, WB, and E with grouped ones and don't-cares, and the simplified equations underneath." loading="lazy"><figcaption>K-maps for WA, WB, and E.</figcaption></figure>
+<h2>Circuit</h2>
+<p>The design uses 17 gates on four chips: a 7404 for the inverters, a 7408 for the ANDs, a 7432 for the ORs, and a 7486 for the XORs.</p>
+<figure><img src="images/5-rps-schematic.jpg" alt="Color-coded hand-drawn schematic with inputs A1, A0, B1, B0 on the left, XOR, AND, and OR gates in the middle, and outputs WA, WB, and E on the right." loading="lazy"><figcaption>Gate-level schematic. Each color traces one signal path.</figcaption></figure>
+<figure class="narrow"><img src="images/4-rps-build.jpg" alt="Breadboard build with four logic chips stacked in the center, two input buttons at each lower corner, and red LEDs at the edges." loading="lazy"><figcaption>The built circuit.</figcaption></figure>
+<ul class="links"><li><a href="multiplier.html">Previous: the two-bit multiplier</a></li></ul>
+</div></main>
+<footer class="site"><div class="wrap">Gabriel Solano, Electrical Engineering, University of Pittsburgh, class of 2029</div></footer>
+<script>
+addEventListener("message",function(e){if(!e.data||typeof e.data.demoHeight!=="number")return;
+document.querySelectorAll(".demo iframe").forEach(function(f){if(f.contentWindow===e.source)f.style.height=(e.data.demoHeight+4)+"px"})});
+</script>
+</body>
+</html>
