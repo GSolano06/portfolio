@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8-bit ripple-carry adder | Gabriel Solano</title>
+<meta name="description" content="An 8-bit ripple-carry adder in VHDL with hand-calculated cost and critical-path delay checked in ModelSim.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site"><div class="wrap">
+<a class="brand" href="index.html">Gabriel Solano</a>
+<nav aria-label="Main"><ul><li><a href="index.html">Home</a></li><li><a href="projects.html" aria-current="page">Projects</a></li><li><a href="about.html">About</a></li></ul></nav>
+</div></header>
+<main id="main"><div class="wrap">
+<p class="crumb"><a href="projects.html">Projects</a> / 8-bit ripple-carry adder</p>
+<h1>8-bit ripple-carry adder</h1>
+<p class="sub">Digital Circuits and Systems, Lab 8, Oct 2026</p>
+<p class="lede">An 8-bit adder built in VHDL from single-bit full adders, with a hand analysis of its cost and critical-path delay that I checked in simulation.</p>
+<dl class="facts"><div><dt>Inputs</dt><dd>8-bit A and B, plus a carry-in</dd></div><div><dt>Outputs</dt><dd>8-bit sum and a carry-out</dd></div><div><dt>Building block</dt><dd>A full adder made from 2-input gates and inverters: 12 gates, 20 gate inputs</dd></div><div><dt>Structure</dt><dd>Two 4-bit ripple-carry blocks chained through the carry</dd></div></dl>
+<h2>The full adder</h2>
+<p>The full adder uses only 2-input gates and inverters. Its sum is x ⊕ y ⊕ carry-in, and its carry-out is 1 when at least two of the three inputs are 1.</p>
+<pre class="eq">w0 = x·y    w1 = x·cin    w2 = y·cin
+carry_out = w0 + w1 + w2
+sum = x ⊕ y ⊕ cin</pre>
+<p>I scored each design as gates plus gate inputs. One full adder is 12 + 20 = 32, so eight of them cost 8 × 32 = 256.</p>
+<figure><img src="adder-fulladder-sketch.png" alt="Hand-drawn gate schematic of the full adder with inputs x, y, and cin, intermediate signals w0 to w6, and outputs carry out and sum." loading="lazy"><figcaption>Hand-drawn schematic of the full adder, with the intermediate signals labeled.</figcaption></figure>
+<h2>The 8-bit adder</h2>
+<p>I chained eight full adders into two 4-bit ripple-carry blocks. The carry out of the lower block feeds the carry in of the upper block, so each stage has to wait for the carry from the stage before it.</p>
+<figure><img src="adder-rtl-structural.png" alt="RTL viewer diagram with two 4-bit ripple-carry blocks. The lower block takes the low four bits of A and B and the carry-in, and its carry-out feeds the upper block, which produces the carry-out and the upper sum bits." loading="lazy"><figcaption>RTL view of the 8-bit adder: a low block and a high block, chained through the carry.</figcaption></figure>
+<h2>Critical-path delay</h2>
+<p>I gave each gate a delay in the VHDL: 1 ns for an inverter, 2 ns for an AND or OR, and 7 ns for an XOR. The slowest path is the carry rippling from the first stage to the last.</p>
+<pre class="eq">First stage, input to carry-out:  1 + 1 + 2 + 2 + 2 = 8 ns
+Each later stage, carry-in to carry-out:  2 + 2 + 2 = 6 ns
+Carry-out of the adder:  8 + 7 × 6 = 50 ns
+Sum bit 7:  8 + 6 × 6 = 44 ns for the carry into the last stage, plus 7 ns = 51 ns</pre>
+<p>To test the worst case, I held B at 0 and the carry-in at 1, then changed A from 11111110 to 11111111. That makes the carry travel through all eight stages. The simulation gave 50 ns to the carry-out and 51 ns to the most significant sum bit, matching the hand analysis.</p>
+<figure><img src="adder-critical-path.png" alt="ModelSim waveform with A_top, B_top, Cin_top, S_top, Cout_top, and c4. After A_top changes from 11111110 to 11111111, the sum bits settle in steps, c4 goes high, and Cout_top goes high last." loading="lazy"><figcaption>ModelSim waveform of the worst case. After A changes, the sum bits settle in steps, the carry between the two blocks (c4) goes high, and the carry-out rises last.</figcaption></figure>
+<h2>What synthesis does</h2>
+<p>The delays above exist only in my VHDL model. Quartus ignores them when it synthesizes the design, so the 50 ns figure describes the model and not the timing of real hardware.</p>
+<p>I also built the adder with the + operator, which lets Quartus choose how to implement the arithmetic. Its RTL view is two adders instead of two blocks of full adders. Quartus can optimize that version more freely than my gate-by-gate one, so the hand-calculated cost of 256 does not predict what the tools produce.</p>
+<figure><img src="adder-rtl-operator.png" alt="RTL viewer diagram with two adder blocks. A_top and B_top feed the first adder, and the carry-in feeds the second adder, which produces the sum and carry-out." loading="lazy"><figcaption>RTL view of the adder written with the + operator.</figcaption></figure>
+<ul class="links"><li><a href="projects.html">All projects</a></li><li><a href="converter.html">Previous: the converter</a></li><li><a href="bcd-adder.html">Next: the BCD adder</a></li></ul>
+</div></main>
+<footer class="site"><div class="wrap">Gabriel Solano, Electrical Engineering, University of Pittsburgh, class of 2029</div></footer>
+
+</body>
+</html>

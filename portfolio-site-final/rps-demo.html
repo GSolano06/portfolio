@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rock-paper-scissors judge demo</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;padding:8px;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;color:#16202A;background:#F1F4F0}
+  .board{background:#123D31;color:#E6F0EA;border-radius:4px;padding:22px;display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:flex-end}
+  fieldset{border:0;margin:0 0 12px;padding:0;min-width:0}
+  legend{padding:0;margin-bottom:8px;font-weight:700}
+  .row{display:flex;flex-wrap:wrap;gap:6px}
+  .opt{position:relative}
+  .opt input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+  .opt label{display:inline-block;padding:7px 11px;border-radius:3px;font-size:15px;background:#0B2A21;border:1px solid #2C6A58;color:#E6F0EA;cursor:pointer}
+  .opt input:checked+label{background:#E6F0EA;color:#0B2A21;border-color:#E6F0EA;font-weight:700}
+  .opt input:focus-visible+label{outline:3px solid #FFD95A;outline-offset:2px}
+  .bits{margin-left:8px;font:12px Consolas,Menlo,monospace;opacity:.75}
+  .outs{display:flex;gap:16px;margin-left:auto}
+  .led-cell{display:flex;flex-direction:column;align-items:center;gap:7px}
+  .sig{font:12px/1 Consolas,Menlo,monospace}
+  .led{width:22px;height:22px;border-radius:50%;background:#4A1B19;border:1px solid rgba(0,0,0,.45)}
+  .led.on{background:#FF4338;box-shadow:0 0 6px 2px rgba(255,67,56,.85),0 0 22px 7px rgba(255,67,56,.4)}
+  .verdict{margin:6px 0 0;font-size:18px;font-weight:700;min-height:1.4em}
+  pre{margin:16px 0 0;padding-left:12px;border-left:3px solid #123D31;font:13.5px/1.7 Consolas,Menlo,monospace}
+  p.note{margin:10px 0 0;font-size:13px;color:#4F5D67}
+</style>
+</head>
+<body>
+<div class="board">
+  <div id="ctl"></div>
+  <div class="outs" role="group" aria-label="Output LEDs" id="outs"></div>
+</div>
+<p class="note">Pick a choice for each player. The LEDs come from the simplified equations in my Lab 5 design, checked against the game rules when the page loads. Both winner LEDs on means a tie. E on means an invalid input.</p>
+<script>
+const opts=[["None","00"],["Rock","01"],["Paper","10"],["Scissors","11"]], sel={A:1,B:3};
+function judge(a1,a0,b1,b0){const xa=a1^b0,xb=a0^b1;return{wa:xa|(b0&(xb^1)),wb:xb|(b1&(xa^1)),e:((a1^1)&(a0^1))|((b1^1)&(b0^1))}}
+const ctl=document.getElementById("ctl"), outs=document.getElementById("outs");
+const leds={};
+["WA","WB","E"].forEach(n=>{const c=document.createElement("div");c.className="led-cell";
+  const l=document.createElement("span");l.className="led";l.setAttribute("role","img");
+  const s=document.createElement("span");s.className="sig";s.textContent=n;c.append(l,s);outs.appendChild(c);leds[n]=l});
+["A","B"].forEach(p=>{
+  const f=document.createElement("fieldset"),lg=document.createElement("legend");lg.textContent="Player "+p;f.appendChild(lg);
+  const r=document.createElement("div");r.className="row";
+  opts.forEach((o,i)=>{const w=document.createElement("span");w.className="opt";
+    const id="r"+p+i,inp=document.createElement("input");inp.type="radio";inp.name="p"+p;inp.id=id;inp.checked=sel[p]===i;
+    inp.onchange=()=>{sel[p]=i;draw()};
+    const lb=document.createElement("label");lb.htmlFor=id;lb.textContent=o[0];
+    const b=document.createElement("span");b.className="bits";b.textContent=o[1];lb.appendChild(b);w.append(inp,lb);r.appendChild(w)});
+  f.appendChild(r);ctl.appendChild(f)});
+const v=document.createElement("p");v.className="verdict";v.setAttribute("aria-live","polite");ctl.appendChild(v);
+function bits(i){return opts[i][1].split("").map(Number)}
+function draw(){
+  const r=judge(...bits(sel.A),...bits(sel.B));
+  leds.WA.classList.toggle("on",!!r.wa);leds.WB.classList.toggle("on",!!r.wb);leds.E.classList.toggle("on",!!r.e);
+  v.textContent=r.e?"Invalid input: E is on":(r.wa&&r.wb?"Tie":(r.wa?"Player A wins":"Player B wins"));
+}
+(function check(){const ch={1:"R",2:"P",3:"S"},beats=["PR","SP","RS"];
+  for(let a=0;a<4;a++)for(let b=0;b<4;b++){const r=judge(...bits(a),...bits(b));
+    if(!a||!b){console.assert(r.e===1,"E",a,b);continue}
+    const want=ch[a]===ch[b]?[1,1]:beats.includes(ch[a]+ch[b])?[1,0]:[0,1];
+    console.assert(r.e===0&&r.wa===want[0]&&r.wb===want[1],"judge",a,b)}})();
+draw();
+
+(function(){function sz(){parent.postMessage({demoHeight:document.body.offsetHeight},"*")}
+addEventListener("load",sz);addEventListener("resize",sz);if(window.ResizeObserver)new ResizeObserver(sz).observe(document.body)})();
+</script>
+</body>
+</html>
