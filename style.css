@@ -27,15 +27,14 @@ h3{font-size:1.05rem;margin:0 0 4px}
 p{margin:0 0 14px;max-width:68ch}
 .lede{font-size:1.22rem;line-height:1.5;color:var(--ink);max-width:46ch;margin-bottom:26px}
 .sub{color:var(--muted);margin:0 0 18px;font-size:1rem}
+.crumb{font-size:.95rem;color:var(--muted);margin:0 0 12px}
 
-/* demo sits on the same paper colour as its iframe so the board reads as part of the page */
 .demo{margin:8px 0 6px}
 .demo iframe{display:block;width:calc(100% + 16px);margin:0 -8px;border:0;min-height:260px;background:var(--paper)}
 .demo-note{font-size:.95rem;color:var(--muted);max-width:68ch}
 
-/* key facts: a ruled table, not cards */
 dl.facts{margin:22px 0 8px;border-top:2px solid var(--green)}
-dl.facts div{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:9px 0;border-bottom:1px solid var(--rule)}
+dl.facts div{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:9px 0;border-bottom:1px solid var(--rule)}
 dl.facts dt{font-weight:600;color:var(--green)}
 dl.facts dd{margin:0}
 
@@ -47,18 +46,30 @@ figcaption{font-size:.93rem;color:var(--muted);margin-top:8px;max-width:60ch}
 .figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:8px 28px;align-items:start}
 .figs figure{margin:12px 0}
 .narrow{max-width:420px}
-.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 32px;align-items:start}
-@media (max-width:720px){.pair{grid-template-columns:1fr}}
 
-/* other work: ruled list */
 .work{list-style:none;margin:6px 0 0;padding:0;border-top:2px solid var(--green)}
 .work li{padding:16px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:150px 1fr;gap:4px 24px}
 .work .when{color:var(--muted);font-size:.95rem}
-.work p{margin:0}
+.work p{margin:0 0 6px}
+.work .more{font-weight:600}
 @media (max-width:640px){.work li,dl.facts div{grid-template-columns:1fr;gap:2px}}
 
 .links{display:flex;flex-wrap:wrap;gap:6px 26px;margin:26px 0 0;padding:0;list-style:none;font-size:1.05rem}
 .links a{font-weight:600}
+
+/* home: quick links */
+.quick{list-style:none;margin:28px 0 0;padding:0;border-top:2px solid var(--green)}
+.quick li{padding:16px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:150px 1fr;gap:4px 24px;align-items:baseline}
+.quick a{font-size:1.2rem;font-weight:700;letter-spacing:-.01em}
+.quick span{color:var(--muted)}
+@media (max-width:640px){.quick li{grid-template-columns:1fr;gap:2px}}
+
+/* about: portrait beside text */
+.about-grid{display:grid;grid-template-columns:260px minmax(0,1fr);gap:20px 40px;align-items:start}
+.portrait{margin:6px 0 0}
+.portrait img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 18%;border:1px solid var(--rule)}
+@media (max-width:760px){.about-grid{grid-template-columns:1fr}.portrait{max-width:260px}}
+.about-text h2:first-child{margin-top:0}
 
 footer.site{border-top:1px solid var(--rule);color:var(--muted);font-size:.92rem}
 footer.site .wrap{padding-top:18px;padding-bottom:30px}
